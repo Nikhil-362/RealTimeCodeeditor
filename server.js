@@ -5,13 +5,16 @@ import path from "path";
 // import { disconnect } from "process";
 import { Server } from "socket.io";
 
+const __dirname = path.resolve();
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.use(express.static("build"));
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
+
+app.use(express.static(path.join(__dirname, "dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 const userMap = {};
