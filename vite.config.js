@@ -7,5 +7,7 @@ export default defineConfig({
   css: {
     postcss: "./postcss.config.cjs", // Reference the PostCSS config file
   },
-  
+   build: {
+    outDir: "dist", // Ensure this matches your server.js path
+  },
 });
