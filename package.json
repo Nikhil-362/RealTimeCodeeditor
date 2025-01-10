@@ -4,9 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-  "build": "npm install && vite build",
-  "server:dev": "nodemon server.js",
   "start": "node server.js",
   "render-build": "npm run build",
   "lint": "eslint .",
