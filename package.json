@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-   "build": "vite build",
-    "server:dev": "nodemon server.js",
-   "start": "node server.js",
-    "lint": "eslint .",
-    "preview": "vite preview"
+  "build": "vite build",
+  "server:dev": "nodemon server.js",
+  "start": "node server.js",
+  "render-build": "npm run build",
+  "lint": "eslint .",
+  "preview": "vite preview"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
