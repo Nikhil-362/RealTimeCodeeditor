@@ -6,14 +6,14 @@ import { useEffect } from "react";
 const placements = ["outside-left"];
 function Selector({ compiler, onSelect, Language }) {
   const lang = Object.entries(LANGUAGE_VERS);
-  console.log(lang);
+  // console.log(lang);
 
   const IndexFinding = (lang, setLang) => {
     const arr = lang.map(([a]) => a);
     return arr.findIndex((b) => b === setLang);
   };
 
-  // useEffect(() => {}, [Language]);
+  useEffect(() => {}, [Language]);
 
   return (
     <>

@@ -10,7 +10,6 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-
 app.use(express.static(path.join(__dirname, "dist")));
 
 app.get("*", (req, res) => {
@@ -20,7 +19,7 @@ app.get("*", (req, res) => {
 const userMap = {};
 const codeMap = {};
 
-app.use("/api/auth", (req, res) => nextAuth(req, res, authOptions));
+// app.use("/api/auth", (req, res) => nextAuth(req, res, authOptions));
 
 const getAllUserFormRoom = (roomId) => {
   return Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(
@@ -58,9 +57,8 @@ io.on("connection", (socket) => {
 
   socket.on("sync_code", ({ roomId, code, Lang }) => {
     codeMap[roomId] = code;
-    // console.log(code);
-    console.log(Lang);
-    socket.to(roomId).emit("code_update", { code, Lang });
+    console.log(code, Lang, "server.js 51 | Code_update_emit");
+    socket.to(roomId).emit("code_update", code );
   });
 
   //Disconnecting

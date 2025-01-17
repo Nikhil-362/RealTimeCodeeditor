@@ -65,10 +65,9 @@ function EditComp({ retrieve }) {
         }
       );
 
-      sockerRef.current.on("code_update", (updatedCode, Lang) => {
-        console.log("Received updated code:", updatedCode);
-        console.log(Lang);
-        setCode(updatedCode);
+      sockerRef.current.on("code_update", (updatedCode) => {
+        console.log(updatedCode, "Code_update");
+        setCode(updatedCode); // Update local state with the new code
       });
 
       sockerRef.current.on("user_left", ({ socketId, username }) => {
@@ -92,6 +91,11 @@ function EditComp({ retrieve }) {
 
   function handleEditorDidMount(editor) {
     editorRef.current = editor;
+
+    if (code) {
+      editor.setValue(code);
+    }
+
     editor.focus();
   }
 
@@ -135,25 +139,29 @@ function EditComp({ retrieve }) {
           onSelect={onSelect}
           Language={Language}
         ></Selector>
+
         <Editor
           height="78vh"
           theme="vs-dark"
           onMount={handleEditorDidMount}
           defaultLanguage={Language}
-          value={code}
-          defaultValue="//Select language and Start coding toGether"
+          value={typeof code === "string" ? code : ""}
+          defaultValue="// Select language and start coding together!"
           options={{
-            fontSize: 20, // Set the font size here
+            fontSize: 20,
           }}
           onChange={(input) => {
-            editorRef.current = input;
-            console.log(editorRef.current, "line 122");
-            setCode(input);
-            sockerRef.current.emit("sync_code", {
-              roomId,
-              code: input,
-              Language,
-            });
+            if (typeof input === "string") {
+              console.log(input, "line 122");
+              setCode(input);
+              sockerRef.current.emit("sync_code", {
+                roomId,
+                code: input,
+                Language,
+              });
+            } else {
+              console.error("Received invalid input from editor:", input);
+            }
           }}
         />
       </div>
