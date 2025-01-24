@@ -1,19 +1,36 @@
 import express from "express";
-
 import http from "http";
-import path from "path";
-// import { disconnect } from "process";
 import { Server } from "socket.io";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const __dirname = path.resolve();
+// Get __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
 
+// Configure CORS
+const corsOptions = {
+  origin: [
+    "https://realtimecodeeditor-8j4c.onrender.com/",
+    "http://localhost:3000",
+  ], // Replace with your frontend URL
+  methods: ["GET", "POST"],
+};
+
+app.use(cors(corsOptions)); // Apply CORS to Express
 app.use(express.static(path.join(__dirname, "dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+// Create a Socket.IO server and apply CORS options
+const io = new Server(server, {
+  cors: corsOptions, // Apply the same CORS configuration for WebSocket connections
 });
 
 const userMap = {};
