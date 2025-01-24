@@ -1,19 +1,51 @@
 import { Select, SelectItem } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+
 import { LANGUAGE_VERS } from "../Default";
-import { useEffect } from "react";
 
 const placements = ["outside-left"];
-function Selector({ compiler, onSelect, Language }) {
-  const lang = Object.entries(LANGUAGE_VERS);
-  // console.log(lang);
+function Selector({ compiler, onSelect, index, Language, sockerRef }) {
+  const options = Object.entries(LANGUAGE_VERS);
 
-  const IndexFinding = (lang, setLang) => {
-    const arr = lang.map(([a]) => a);
-    return arr.findIndex((b) => b === setLang);
+  const localData = localStorage.getItem("data");
+
+  let username, roomId;
+  localData
+    ? ({ username, roomId } = JSON.parse(localData))
+    : console.log("no data");
+
+  const [selectedLanguage, setSelectedLanguage] = useState(Language);
+
+  useEffect(() => {
+    setSelectedLanguage(Language);
+  }, [Language]);
+
+  // Update selectedLanguage whenever the Language prop changes
+  useEffect(() => {
+    if (!sockerRef.current) return;
+
+    // const handleSelected = ({ Lan }) => {
+    //   console.log("Language updated for all users:", Lan);
+    //   setSelectedLanguage(Lan); // Update the state for all users
+    // };
+
+    sockerRef.current.on("selected", ({ Lan }) => {
+      console.log("Language updated for all users:", Lan);
+      setSelectedLanguage(Lan);
+    });
+
+    return () => {
+      sockerRef.current.off("selected");
+    };
+  }, [Language, sockerRef]);
+
+  console.log("Current Language:", selectedLanguage);
+
+  const selection = (ls) => {
+    if (!sockerRef.current) return;
+    sockerRef.current.emit("selection", { ls, roomId });
   };
-
-  useEffect(() => {}, [Language]);
 
   return (
     <>
@@ -25,16 +57,17 @@ function Selector({ compiler, onSelect, Language }) {
                 key={placement}
                 className="max-w-xs items-center "
                 label="Language"
-                defaultSelectedKeys={
-                  Language
-                    ? [lang[IndexFinding(lang, Language)][0]]
-                    : [lang[0][0]]
-                }
-                // defaultSelectedKeys={[lang[0][0]]}
                 labelPlacement={placement}
+                selectedKeys={[selectedLanguage]}
               >
-                {lang.map(([Ls]) => (
-                  <SelectItem key={Ls} onPress={() => onSelect(Ls)}>
+                {options.map(([Ls]) => (
+                  <SelectItem
+                    key={Ls}
+                    onPress={() => {
+                      onSelect(Ls);
+                      selection(Ls);
+                    }}
+                  >
                     {Ls.replace(/\b\w/g, (char) => char.toUpperCase())}
                   </SelectItem>
                 ))}

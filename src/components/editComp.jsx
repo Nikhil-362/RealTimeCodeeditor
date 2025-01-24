@@ -9,6 +9,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
+import { LANGUAGE_VERS } from "../Default";
+
 // import { getCookie } from "cookies-next";
 
 function EditComp({ retrieve }) {
@@ -30,6 +32,8 @@ function EditComp({ retrieve }) {
     : console.log("no data");
 
   const [code, setCode] = useState();
+  const [Language, SetLanguage] = useState("javascript");
+  const [index, Setindex] = useState("0");
 
   useEffect(() => {
     const init = async () => {
@@ -52,8 +56,8 @@ function EditComp({ retrieve }) {
         ({ allUsers, username: joinedUser, currentCode }) => {
           console.log("AllUsers", allUsers);
           console.log("Joined User", joinedUser);
-          if (username !== joinedUser) {
-            toast.success(`${username} joined the room`);
+          if (username!== joinedUser) {
+            toast.success(`${joinedUser} joined the room`);
           }
 
           setUsers(allUsers);
@@ -65,8 +69,10 @@ function EditComp({ retrieve }) {
         }
       );
 
-      sockerRef.current.on("code_update", (updatedCode) => {
+      sockerRef.current.on("code_update", ({ updatedCode, Lang }) => {
         console.log(updatedCode, "Code_update");
+        SetLanguage(Lang);
+        IndexFinding(Lang);
         setCode(updatedCode); // Update local state with the new code
       });
 
@@ -99,9 +105,6 @@ function EditComp({ retrieve }) {
     editor.focus();
   }
 
-  // console.log(editorRef.current, "line23");
-  const [Language, SetLanguage] = useState("javascript");
-
   const onSelect = (Lang) => {
     setCode(DEFAULT_CODE[Lang]);
     SetLanguage(Lang);
@@ -113,9 +116,15 @@ function EditComp({ retrieve }) {
   };
 
   const compiler = async () => {
-    // console.log(Language, code);
+    console.log(Language, code);
     const response = await execute(Language, code);
     retrieve(response);
+  };
+
+  const IndexFinding = (setLang) => {
+    const Lang = Object.entries(LANGUAGE_VERS);
+    const arr = Lang.map(([a]) => a);
+    Setindex(arr.findIndex((b) => b === setLang));
   };
 
   return (
@@ -133,11 +142,14 @@ function EditComp({ retrieve }) {
           pauseOnHover
           theme="dark"
         />
+
         <Drawer users={users}></Drawer>
         <Selector
           compiler={compiler}
           onSelect={onSelect}
+          index={index}
           Language={Language}
+          sockerRef={sockerRef}
         ></Selector>
 
         <Editor
@@ -152,12 +164,11 @@ function EditComp({ retrieve }) {
           }}
           onChange={(input) => {
             if (typeof input === "string") {
-              console.log(input, "line 122");
               setCode(input);
               sockerRef.current.emit("sync_code", {
                 roomId,
                 code: input,
-                Language,
+                Lang: Language,
               });
             } else {
               console.error("Received invalid input from editor:", input);

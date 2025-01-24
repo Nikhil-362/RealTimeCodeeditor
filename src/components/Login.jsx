@@ -15,7 +15,7 @@ export default function App() {
   // const cookieData = JSON.parse(getCookie("data"));
   // console.log(cookieData.roomId);
 
-  const localData = localStorage.getItem("data");
+  const localData = JSON.parse(localStorage.getItem("data"));
   console.log(localData);
 
   const navigator = useNavigate();

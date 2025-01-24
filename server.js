@@ -58,7 +58,7 @@ io.on("connection", (socket) => {
   socket.on("sync_code", ({ roomId, code, Lang }) => {
     codeMap[roomId] = code;
     console.log(code, Lang, "server.js 51 | Code_update_emit");
-    socket.to(roomId).emit("code_update", code );
+    socket.to(roomId).emit("code_update", { updatedCode: code, Lang });
   });
 
   //Disconnecting
@@ -74,6 +74,11 @@ io.on("connection", (socket) => {
     });
     delete userMap[socket.id];
     socket.leave();
+  });
+
+  socket.on("selection", ({ ls, roomId }) => {
+    console.log("Language selected:", ls);
+    socket.broadcast.to(roomId).emit("selected", { Lan: ls });
   });
 });
 
