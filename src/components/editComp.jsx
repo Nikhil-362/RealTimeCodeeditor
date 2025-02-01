@@ -56,7 +56,7 @@ function EditComp({ retrieve }) {
         ({ allUsers, username: joinedUser, currentCode }) => {
           console.log("AllUsers", allUsers);
           console.log("Joined User", joinedUser);
-          if (username!== joinedUser) {
+          if (username !== joinedUser) {
             toast.success(`${joinedUser} joined the room`);
           }
 
@@ -116,9 +116,25 @@ function EditComp({ retrieve }) {
   };
 
   const compiler = async () => {
-    console.log(Language, code);
+    console.log(Language, code, "EditComp.jsx");
     const response = await execute(Language, code);
     retrieve(response);
+  };
+
+
+
+  const saveFile = () => {
+    // const fileExtension = extensions[language] || "txt";
+    const fileExtension = LANGUAGE_VERS[Language].extension || "txt";
+    const fileName = `code.${fileExtension}`;
+
+    const blob = new Blob([code], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const IndexFinding = (setLang) => {
@@ -150,6 +166,7 @@ function EditComp({ retrieve }) {
           index={index}
           Language={Language}
           sockerRef={sockerRef}
+          saveFile={saveFile}
         ></Selector>
 
         <Editor

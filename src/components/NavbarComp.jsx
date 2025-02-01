@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 // import { getCookie } from "cookies-next";
 import { googleLogout } from "@react-oauth/google";
-import  { useNavigate } from "react-router-dom";  
+import { useNavigate } from "react-router-dom";
 // import { deleteCookie } from "cookies-next";
 
 export const AcmeLogo = () => {
@@ -58,14 +58,14 @@ function NavbarComp() {
       <NavbarContent className="sm:hidden pr-3" justify="center">
         <NavbarBrand>
           <AcmeLogo />
-          <p className="font-bold text-inherit">ACME</p>
+          <p className="font-bold text-inherit">RTC | Editor</p>
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarBrand>
           <AcmeLogo />
-          <p className="font-bold text-inherit">ACME</p>
+          <p className="font-bold text-inherit">RTC  Editor</p>
         </NavbarBrand>
         <NavbarItem>
           <Link color="foreground" href="#">
@@ -129,8 +129,8 @@ function NavbarComp() {
                 index === 2
                   ? "warning"
                   : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
+                    ? "danger"
+                    : "foreground"
               }
               href="#"
               size="lg"

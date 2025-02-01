@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { LANGUAGE_VERS } from "../Default";
 
 const placements = ["outside-left"];
-function Selector({ compiler, onSelect, index, Language, sockerRef }) {
+
+function Selector({ compiler, onSelect, index, Language, sockerRef, saveFile }) {
   const options = Object.entries(LANGUAGE_VERS);
 
   const localData = localStorage.getItem("data");
@@ -44,6 +45,7 @@ function Selector({ compiler, onSelect, index, Language, sockerRef }) {
 
   const selection = (ls) => {
     if (!sockerRef.current) return;
+    console.log(ls, "line 47");
     sockerRef.current.emit("selection", { ls, roomId });
   };
 
@@ -64,6 +66,7 @@ function Selector({ compiler, onSelect, index, Language, sockerRef }) {
                   <SelectItem
                     key={Ls}
                     onPress={() => {
+                      console.log(Ls);
                       onSelect(Ls);
                       selection(Ls);
                     }}
@@ -74,14 +77,35 @@ function Selector({ compiler, onSelect, index, Language, sockerRef }) {
               </Select>
             ))}
 
-            <Button
-              color="success"
-              onPress={async () => {
-                await compiler();
-              }}
-            >
-              Success
-            </Button>
+            <div>
+
+              <Button
+                className="mx-2 my-2"
+                
+                color="success"
+                variant="bordered"
+                onPress={async () => {
+                  await saveFile()
+                }}
+              >
+                Download Code
+              </Button>
+
+              <Button
+                className="mx-2"
+                color="warning"
+                variant="bordered"
+                onPress={async () => {
+                  await compiler();
+                }}>
+
+                Compile
+              </Button>
+
+
+            </div>
+
+
           </div>
         </div>
       </div>
